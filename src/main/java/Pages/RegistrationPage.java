@@ -1,7 +1,5 @@
 package Pages;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
 
 public class RegistrationPage {
 

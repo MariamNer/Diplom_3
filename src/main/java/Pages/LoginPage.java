@@ -1,6 +1,5 @@
 package Pages;
 
-import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -26,12 +25,25 @@ public class LoginPage {
     private final By enterButton = By.xpath(".//button[text()='Войти']");
     // Текст сообщения о неправильном пароле
     public final By messageErrorPassword = By.xpath(".//p[text()='Некорректный пароль']");
+    //Логотип Stellar Burgers
+    public final By logoStellarBurger = By.xpath(".//div/a[@href='/']");
+    //Кнопка Конструктор
+    private final By constructorButton = By.xpath(".//p[text()='Конструктор']");
+
 
     private final WebDriver driver;
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
     }
+
+    public void clickLogoStellarBurger() {
+        driver.findElement(logoStellarBurger).click();
+    }
+    public void clickOnConstructorButton() {
+        driver.findElement(constructorButton).click();
+    }
+
 
     public void clickbuttonRecoveryPassword(){
         driver.findElement(buttonRecoveryPassword).click();
@@ -49,13 +61,6 @@ public class LoginPage {
         driver.findElement(fieldPassword).sendKeys(password);
     }
 
-    public String buttonEnterText() {
-        return driver.findElement(enterButton).getText();
-    }
-
-    public String textIncorrectPassword() {
-        return driver.findElement(messageErrorPassword).getText();
-    }
 
     public void clickButtonEnter() {
         driver.findElement(enterButton).click();

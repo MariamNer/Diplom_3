@@ -8,28 +8,26 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class MainPage {
+
     // Кнопка "Личный кабинет"
     private final By personalAccount = By.xpath(".//p[text()='Личный Кабинет']");
     // Кнопка "Оформить заказ"
     private final By createOrder = By.xpath(".//button[text()='Оформить заказ']");
-    // Кнопка Вход в форме регистрации
-    private final By enterOnRegistrationForm = By.xpath(".//a[text()='Войти']");
     // Кнопка войти в аккаунт на главной странице
     private final By enterButton = By.xpath(".//button[text()='Войти в аккаунт']");
-    // Надпись Соберите бургер на главной странице
-    private final By chooseBurger = By.xpath(".//h1[text()='Соберите бургер']");
-    // Кнопка Булки в конструкторе
-    private final By breadButton = By.xpath(".//div/span[text()='Булки']");
     // Кнопка Соусы в конструкторе
     private final By sauceButton = By.xpath(".//div/span[text()='Соусы']");
     // Кнопка Начинки в конструкторе
     private final By filingsButton = By.xpath(".//div/span[text()='Начинки']");
-    // Краторная булка
-    private final By cratorBread = By.xpath(".//p[text()='Краторная булка N-200i']");
-    // Соус Традиционный галактический
-    private final By galaxySauce = By.xpath(".//p[text()='Соус традиционный галактический']");
-    // Филе Люминесцентного тетраодонтимформа
-    private final By luminFiling = By.xpath(".//p[text()='Филе Люминесцентного тетраодонтимформа']");
+
+    //картинка с Булкой для проверки видимости раздела
+    public By bunsImg = By.xpath(".//img[@alt='Флюоресцентная булка R2-D3']");
+    //текст заголовка Булки для проверки видимости раздела
+    public By bunsText = By.xpath(".//h2[text()='Булки']");
+    //картинка с Соусом для проверки видимости раздела
+    public By saucesImg = By.xpath(".//p[text()='Соус традиционный галактический']");
+    //картинка с Начинкой для проверки видимости раздела
+    public By fillingsImg = By.xpath(".//img[@alt='Говяжий метеорит (отбивная)']");
 
     private final WebDriver driver;
     private static final String url = "https://stellarburgers.nomoreparties.site/";
@@ -38,33 +36,11 @@ public class MainPage {
         this.driver = driver;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
     public void clickPersonalAccount() {
         driver.findElement(personalAccount).click();
     }
 
-    public void clickEnterOnRegistrationForm() {
-        driver.findElement(enterOnRegistrationForm).click();
-    }
-
-    public void clickEnterButton() {
-        driver.findElement(enterButton).click();
-    }
-
-    public String textOfChooseBurger() {
-        return driver.findElement(chooseBurger).getText();
-    }
-
-    public String buttonCreateOrderText() {
-        return driver.findElement(createOrder).getText();
-    }
-
-    public void clickBreadButton() {
-        driver.findElement(breadButton).click();
-    }
 
     public void clickSauceButton() {
         driver.findElement(sauceButton).click();
@@ -74,25 +50,38 @@ public class MainPage {
         driver.findElement(filingsButton).click();
     }
 
-    public String getTextCratorBread() {
-        return driver.findElement(cratorBread).getText();
-    }
-
-    public String getTextGalaxySauce() {
-        return driver.findElement(galaxySauce).getText();
-    }
-
-    public String getTextLuminFiling() {
-        return driver.findElement(luminFiling).getText();
-    }
-
     public boolean isOpened() {
         return driver.findElement(createOrder).isDisplayed();
+    }
+
+    public boolean isOpenedUnauth() {
+        return driver.findElement(enterButton).isDisplayed();
     }
 
     public void waitForLoad(){
         // подожди 3 секунды, чтобы элемент с нужным текстом стал видимым
         new WebDriverWait(driver, Duration.ofSeconds(3))
                 .until(ExpectedConditions.visibilityOfElementLocated(createOrder));
+    }
+
+    public void waitForLoadUnauth(){
+        // подожди 3 секунды, чтобы элемент с нужным текстом стал видимым
+        new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.visibilityOfElementLocated(enterButton));
+    }
+    public void waitForLoadBuns() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(bunsImg));
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(bunsText));
+    }
+    public void waitForLoadSause() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(saucesImg));
+    }
+
+    public void waitForLoadFilling() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(fillingsImg));
     }
 }
