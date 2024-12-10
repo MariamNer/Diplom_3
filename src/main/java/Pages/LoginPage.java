@@ -1,5 +1,6 @@
 package Pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,8 +12,12 @@ import java.time.Duration;
 public class LoginPage {
 
     public By entrance = By.xpath(".//main/div/h2[text()='Вход']");
-    // Кнопка зарегестрироваться
-    private final By buttonRegistration = By.className("Auth_link__1fOlj");
+    // Кнопка зарегистрироваться
+    public final By buttonRegistration = By.xpath(".//a[@href='/register' and text()='Зарегистрироваться']");
+
+    //Кнопка восстановить пароль
+    public final By buttonRecoveryPassword = By.xpath(".//a[@href='/forgot-password' and text()='Восстановить пароль']");
+
     // Поле Email
     private final By fieldEmail = By.xpath(".//div/input[@name='name']");
     // Поле пароль
@@ -28,7 +33,11 @@ public class LoginPage {
         this.driver = driver;
     }
 
-    public void clickButtonFromStartRegistration() {
+    public void clickbuttonRecoveryPassword(){
+        driver.findElement(buttonRecoveryPassword).click();
+    }
+
+    public void clickButtonFromRegistration() {
         driver.findElement(buttonRegistration).click();
     }
 
@@ -50,6 +59,7 @@ public class LoginPage {
 
     public void clickButtonEnter() {
         driver.findElement(enterButton).click();
+
     }
 
     public void loginEnterFieldsAndClick(String email, String password) {
@@ -63,4 +73,18 @@ public class LoginPage {
     public boolean isOpened(){
         return driver.findElement(fieldEmail).isDisplayed();
     }
+
+
+    public void authorization(String email, String password){
+        fillInEmail(email);
+        fillInPassword(password);
+    }
+
+    public void waitForLoadEntrance(){
+        // подожди 3 секунды, чтобы элемент с нужным текстом стал видимым
+        new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.visibilityOfElementLocated(entrance));
+    }
+
+
 }

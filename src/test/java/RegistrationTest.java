@@ -75,7 +75,7 @@ public class RegistrationTest {
         MainPage mainPage = new MainPage(driver);
         mainPage.clickPersonalAccount();
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.clickButtonFromStartRegistration();
+        loginPage.clickButtonFromRegistration();
         RegistrationPage registrationPage = new RegistrationPage(driver);
         registrationPage.fill_out_form(RandomStringUtils.randomAlphabetic(5),
                 RandomStringUtils.randomAlphanumeric(5)+ "@mail.ru",
@@ -93,7 +93,7 @@ public class RegistrationTest {
         MainPage mainPage = new MainPage(driver);
         mainPage.clickPersonalAccount();
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.clickButtonFromStartRegistration();
+        loginPage.clickButtonFromRegistration();
         RegistrationPage registrationPage = new RegistrationPage(driver);
         registrationPage.fill_out_form(RandomStringUtils.randomAlphabetic(5),
                 RandomStringUtils.randomAlphanumeric(5)+ "@mail.ru",

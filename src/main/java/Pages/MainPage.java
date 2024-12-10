@@ -2,6 +2,10 @@ package Pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class MainPage {
     // Кнопка "Личный кабинет"
@@ -80,5 +84,15 @@ public class MainPage {
 
     public String getTextLuminFiling() {
         return driver.findElement(luminFiling).getText();
+    }
+
+    public boolean isOpened() {
+        return driver.findElement(createOrder).isDisplayed();
+    }
+
+    public void waitForLoad(){
+        // подожди 3 секунды, чтобы элемент с нужным текстом стал видимым
+        new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.visibilityOfElementLocated(createOrder));
     }
 }
