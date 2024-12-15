@@ -21,7 +21,8 @@ public class MainPage {
     // Кнопка Булки в конструкторе
     private final By bunButton = By.xpath(".//div/span[text()='Булки']");
     // Кнопка Начинки в конструкторе
-    private final By filingsButton = By.xpath(".//div/span[text()='Начинки']");
+    public final By filingsButton = By.xpath(".//div/span[text()='Начинки']");
+    public final By filingsButtonDiv = By.xpath(".//div/span[text()='Начинки']/..");
 
     //картинка с Булкой для проверки видимости раздела
     public By bunsImg = By.xpath(".//img[@alt='Флюоресцентная булка R2-D3']");
