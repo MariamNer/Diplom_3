@@ -1,20 +1,15 @@
 
-import Pages.LoginPage;
 import Pages.MainPage;
-import Pages.RegistrationPage;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
+
 import jdk.jfr.Description;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
+import org.junit.Test;
+
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ConstructorTest extends ChoosingBrowser{

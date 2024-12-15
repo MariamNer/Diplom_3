@@ -4,7 +4,6 @@ import Pages.RecoveryFormPage;
 import Pages.RegistrationPage;
 import dto.LoginUser;
 import dto.ResponseUser;
-import dto.User;
 import dto.UserApi;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
@@ -16,12 +15,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.openqa.selenium.UsernameAndPassword;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
