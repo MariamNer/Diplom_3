@@ -2,8 +2,14 @@ import Pages.LoginPage;
 import Pages.MainPage;
 import Pages.RecoveryFormPage;
 import Pages.RegistrationPage;
+import dto.LoginUser;
+import dto.ResponseUser;
+import dto.User;
+import dto.UserApi;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import jdk.jfr.Description;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -12,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -21,50 +28,21 @@ import java.time.Duration;
 
 import static org.junit.Assert.assertTrue;
 
-@RunWith(Parameterized.class)
-public class LogInTest {
-    private WebDriver driver;
+
+public class LogInTest extends ChoosingBrowser {
+
     private final static String name = "TEST";
     private final static String email = "TESTTEST1"+RandomStringUtils.randomNumeric(8)+"@mail.ru";
     private final static String password = "1234567";
+    private String accessToken;
 
-    public LogInTest(String driverType){
-        switch (driverType) {
-
-            case "yandex":
-                createYandexDriver();
-                break;
-            case "chrome":
-            default:
-                createChromeDriver();
-
-        }
-    }
-
-    private void createChromeDriver(){
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\chromedriver.exe");
-        driver = new ChromeDriver();
-    }
-
-    private void createYandexDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\yandex_chromedriver.exe");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("C:\\Users\\local_user\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe");
-        driver = new ChromeDriver(chromeOptions);
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] getDriver(){
-        return new Object[][]{
-                {"chrome"},
-                {"yandex"},
-        };
+    public LogInTest(String driverType) {
+        super(driverType);
     }
 
 
     @Before
     public void open(){
-        driver.get("https://stellarburgers.nomoreparties.site/");
         MainPage mainPage = new MainPage(driver);
         mainPage.clickPersonalAccount();
         LoginPage loginPage = new LoginPage(driver);
@@ -83,12 +61,19 @@ public class LogInTest {
     @Description("Вход по кнопке «Войти в аккаунт» на главной")
     @Step
     public void logInByLoginButtonTest(){
+        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site";
         MainPage mainPage = new MainPage(driver);
         mainPage.clickPersonalAccount();
         LoginPage loginPage = new LoginPage(driver);
         loginPage.loginEnterFieldsAndClick(email, password);
         mainPage.waitForLoad();
         assertTrue(mainPage.isOpened());
+        LoginUser loginUser = new LoginUser(email, password);
+        Response response = UserApi.loginUser(loginUser);
+        ResponseUser responseUser = response.as(ResponseUser.class);
+        accessToken = responseUser.accessToken;
+
+
     }
 
     @Test
@@ -103,6 +88,12 @@ public class LogInTest {
         loginPage.clickButtonEnter();
         mainPage.waitForLoad();
         Assert.assertTrue(mainPage.isOpened());
+
+        LoginUser loginUser = new LoginUser(email, password);
+        Response response = UserApi.loginUser(loginUser);
+        ResponseUser responseUser = response.as(ResponseUser.class);
+        accessToken = responseUser.accessToken;
+
     }
 
     @Test
@@ -118,6 +109,11 @@ public class LogInTest {
         registrationPage.logInButtonClick();
         loginPage.waitForLoadEntrance();
         Assert.assertTrue(loginPage.isOpened());
+
+        LoginUser loginUser = new LoginUser(email, password);
+        Response response = UserApi.loginUser(loginUser);
+        ResponseUser responseUser = response.as(ResponseUser.class);
+        accessToken = responseUser.accessToken;
     }
 
     @Test
@@ -137,11 +133,16 @@ public class LogInTest {
         loginPage.clickButtonEnter();
         mainPage.waitForLoad();
         Assert.assertTrue(mainPage.isOpened());
+
+        LoginUser loginUser = new LoginUser(email, password);
+        Response response = UserApi.loginUser(loginUser);
+        ResponseUser responseUser = response.as(ResponseUser.class);
+        accessToken = responseUser.accessToken;
     }
 
     @After
-    public void closeBrowser () {
+    public void tearDown() {
+        UserApi.deleteUser(accessToken);
         driver.quit();
     }
-
 }

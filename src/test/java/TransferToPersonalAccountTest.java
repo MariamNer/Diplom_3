@@ -2,8 +2,13 @@ import Pages.AccoutPage;
 import Pages.LoginPage;
 import Pages.MainPage;
 import Pages.RegistrationPage;
+import dto.LoginUser;
+import dto.ResponseUser;
+import dto.UserApi;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import jdk.jfr.Description;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -20,49 +25,20 @@ import java.time.Duration;
 
 import static org.junit.Assert.assertTrue;
 
-@RunWith(Parameterized.class)
-public class TransferToPersonalAccountTest {
+public class TransferToPersonalAccountTest extends ChoosingBrowser{
 
-        private WebDriver driver;
         private final static String name = "TEST";
         private final static String email = "TESTTEST1"+ RandomStringUtils.randomNumeric(8)+"@mail.ru";
         private final static String password = "1234567";
+        private String accessToken;
 
-        public TransferToPersonalAccountTest(String driverType){
-            switch (driverType) {
+    public TransferToPersonalAccountTest(String driverType) {
+        super(driverType);
+    }
 
-                case "yandex":
-                    createYandexDriver();
-                    break;
-                case "chrome":
-                default:
-                    createChromeDriver();
 
-            }
-        }
-
-        private void createChromeDriver(){
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\chromedriver.exe");
-            driver = new ChromeDriver();
-        }
-
-        private void createYandexDriver() {
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\yandex_chromedriver.exe");
-            ChromeOptions chromeOptions = new ChromeOptions();
-            chromeOptions.setBinary("C:\\Users\\local_user\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe");
-            driver = new ChromeDriver(chromeOptions);
-        }
-
-        @Parameterized.Parameters
-        public static Object[][] getDriver(){
-            return new Object[][]{
-                    {"chrome"},
-                    {"yandex"},
-            };
-        }
         @Before
         public void open(){
-            driver.get("https://stellarburgers.nomoreparties.site/");
             MainPage mainPage = new MainPage(driver);
             mainPage.clickPersonalAccount();
             LoginPage loginPage = new LoginPage(driver);
@@ -84,6 +60,10 @@ public class TransferToPersonalAccountTest {
             LoginPage loginPage = new LoginPage(driver);
             loginPage.waitForLoadEntrance();
             assertTrue(loginPage.isOpened());
+            LoginUser loginUser = new LoginUser(email, password);
+            Response response = UserApi.loginUser(loginUser);
+            ResponseUser responseUser = response.as(ResponseUser.class);
+            accessToken = responseUser.accessToken;
         }
 
         @Test
@@ -103,6 +83,11 @@ public class TransferToPersonalAccountTest {
             accoutPage.waitForLoadProfilePage();
             accoutPage.clickexitButton();
             assertTrue(loginPage.isOpened());
+            LoginUser loginUser = new LoginUser(email, password);
+            Response response = UserApi.loginUser(loginUser);
+            ResponseUser responseUser = response.as(ResponseUser.class);
+            accessToken = responseUser.accessToken;
+
         }
 
         @Test
@@ -115,8 +100,11 @@ public class TransferToPersonalAccountTest {
             LoginPage loginPage = new LoginPage(driver);
             loginPage.waitForLoadEntrance();
             loginPage.clickLogoStellarBurger();
-            mainPage.waitForLoadUnauth();
             assertTrue(mainPage.isOpenedUnauth());
+            LoginUser loginUser = new LoginUser(email, password);
+            Response response = UserApi.loginUser(loginUser);
+            ResponseUser responseUser = response.as(ResponseUser.class);
+            accessToken = responseUser.accessToken;
         }
 
         @Test
@@ -129,12 +117,16 @@ public class TransferToPersonalAccountTest {
             LoginPage loginPage = new LoginPage(driver);
             loginPage.waitForLoadEntrance();
             loginPage.clickOnConstructorButton();
-            mainPage.waitForLoadUnauth();
             assertTrue(mainPage.isOpenedUnauth());
+            LoginUser loginUser = new LoginUser(email, password);
+            Response response = UserApi.loginUser(loginUser);
+            ResponseUser responseUser = response.as(ResponseUser.class);
+            accessToken = responseUser.accessToken;
         }
 
         @After
         public void closeBrowser () {
+            UserApi.deleteUser(accessToken);
             driver.quit();
         }
 }

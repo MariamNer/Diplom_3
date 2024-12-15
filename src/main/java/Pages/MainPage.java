@@ -16,7 +16,10 @@ public class MainPage {
     // Кнопка войти в аккаунт на главной странице
     private final By enterButton = By.xpath(".//button[text()='Войти в аккаунт']");
     // Кнопка Соусы в конструкторе
-    private final By sauceButton = By.xpath(".//div/span[text()='Соусы']");
+    public final By sauceButton = By.xpath(".//div/span[text()='Соусы']");
+    public final By sauceButtonDiv = By.xpath(".//div/span[text()='Соусы']/..");
+    // Кнопка Булки в конструкторе
+    private final By bunButton = By.xpath(".//div/span[text()='Булки']");
     // Кнопка Начинки в конструкторе
     private final By filingsButton = By.xpath(".//div/span[text()='Начинки']");
 
@@ -28,6 +31,9 @@ public class MainPage {
     public By saucesImg = By.xpath(".//p[text()='Соус традиционный галактический']");
     //картинка с Начинкой для проверки видимости раздела
     public By fillingsImg = By.xpath(".//img[@alt='Говяжий метеорит (отбивная)']");
+
+
+
 
     private final WebDriver driver;
     private static final String url = "https://stellarburgers.nomoreparties.site/";
@@ -77,7 +83,9 @@ public class MainPage {
     }
     public void waitForLoadSause() {
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(saucesImg));
+                .until(ExpectedConditions.elementToBeClickable(sauceButton));
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(bunButton));
     }
 
     public void waitForLoadFilling() {

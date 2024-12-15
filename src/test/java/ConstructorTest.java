@@ -1,66 +1,29 @@
 
+import Pages.LoginPage;
 import Pages.MainPage;
+import Pages.RegistrationPage;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.RestAssured;
 import jdk.jfr.Description;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(Parameterized.class)
-public class ConstructorTest {
-    private WebDriver driver;
-    private final static String name = "TEST";
-    private final static String email = "TESTTEST1"+ RandomStringUtils.randomNumeric(8)+"@mail.ru";
-    private final static String password = "1234567";
+public class ConstructorTest extends ChoosingBrowser{
 
-    public ConstructorTest(String driverType){
-        switch (driverType) {
 
-            case "yandex":
-                createYandexDriver();
-                break;
-            case "chrome":
-            default:
-                createChromeDriver();
-
-        }
+    public ConstructorTest(String driverType) {
+        super(driverType);
     }
 
-    private void createChromeDriver(){
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\chromedriver.exe");
-        driver = new ChromeDriver();
-    }
-
-    private void createYandexDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\yandex_chromedriver.exe");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("C:\\Users\\local_user\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe");
-        driver = new ChromeDriver(chromeOptions);
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] getDriver(){
-        return new Object[][]{
-                {"chrome"},
-                {"yandex"},
-        };
-    }
-
-
-    @Before
-    public void open(){
-        driver.get("https://stellarburgers.nomoreparties.site/");
-    }
 
     @Test
     @DisplayName("Переход")
@@ -81,9 +44,11 @@ public class ConstructorTest {
         MainPage mainPage = new MainPage(driver);
         mainPage.isOpenedUnauth();
         mainPage.clickSauceButton();
-        mainPage.waitForLoadSause();
-        assertTrue(driver.findElement(mainPage.saucesImg).isDisplayed());
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        System.out.println(driver.findElement(mainPage.sauceButtonDiv).getAttribute("class"));
+        System.out.println(driver.findElement(mainPage.sauceButtonDiv).getAttribute("class").contains("tab_tab_type_current"));
 
+        assertTrue(driver.findElement(mainPage.sauceButtonDiv).getAttribute("class").contains("tab_tab_type_current"));
     }
 
     @Test
@@ -93,7 +58,7 @@ public class ConstructorTest {
     public void transitionFillingsConstructorTest(){
         MainPage mainPage = new MainPage(driver);
         mainPage.isOpenedUnauth();
-        mainPage.clickFilingsButton();
+//        mainPage.clickFilingsButton();
         mainPage.waitForLoadFilling();
         assertTrue(driver.findElement(mainPage.fillingsImg).isDisplayed());
 

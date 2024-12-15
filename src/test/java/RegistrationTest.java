@@ -2,8 +2,13 @@
 import Pages.LoginPage;
 import Pages.MainPage;
 import Pages.RegistrationPage;
+import dto.LoginUser;
+import dto.ResponseUser;
+import dto.UserApi;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import jdk.jfr.Description;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -22,48 +27,13 @@ import java.time.Duration;
 
 import static org.junit.Assert.assertTrue;
 
-@RunWith(Parameterized.class)
-public class RegistrationTest {
-
-    private WebDriver driver;
-
-    public RegistrationTest(String driverType){
-        switch (driverType) {
-
-            case "yandex":
-                createYandexDriver();
-                break;
-            case "chrome":
-            default:
-                createChromeDriver();
-
-        }
-    }
-
-    private void createChromeDriver(){
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\chromedriver.exe");
-        driver = new ChromeDriver();
-    }
-
-    private void createYandexDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\local_user\\Desktop\\Diplom\\Diplom_3\\yandex_chromedriver.exe");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("C:\\Users\\local_user\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe");
-        driver = new ChromeDriver(chromeOptions);
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] getDriver(){
-        return new Object[][]{
-                {"chrome"},
-                {"yandex"},
-        };
-    }
+public class RegistrationTest extends ChoosingBrowser {
 
 
-    @Before
-    public void open(){
-        driver.get("https://stellarburgers.nomoreparties.site/");
+    private String accessToken;
+
+    public RegistrationTest(String driverType) {
+        super(driverType);
     }
 
 
@@ -77,12 +47,19 @@ public class RegistrationTest {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.clickButtonFromRegistration();
         RegistrationPage registrationPage = new RegistrationPage(driver);
+        String email = "as"+ RandomStringUtils.randomAlphanumeric(5)+ "@mail.ru";
+        String password = RandomStringUtils.randomAlphanumeric(6);
         registrationPage.fill_out_form(RandomStringUtils.randomAlphabetic(5),
-                RandomStringUtils.randomAlphanumeric(5)+ "@mail.ru",
-                RandomStringUtils.randomAlphanumeric(6));
+                email, password);
         new WebDriverWait(driver, Duration.ofSeconds(10));
         registrationPage.registerButtonClick();
         assertTrue(loginPage.isOpened());
+        LoginUser loginUser = new LoginUser(email, password);
+        Response response = UserApi.loginUser(loginUser);
+        response.then().log().all();
+        ResponseUser responseUser = response.as(ResponseUser.class);
+        accessToken = responseUser.accessToken;
+        UserApi.deleteUser(accessToken);
     }
 
     @Test
@@ -103,10 +80,6 @@ public class RegistrationTest {
         Assert.assertEquals("Некорректный пароль",
                 driver.findElement(loginPage.messageErrorPassword).getText());
     }
-
-
-
-
 
     @After
     public void closeBrowser () {
